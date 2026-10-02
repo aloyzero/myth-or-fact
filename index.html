@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTC Debug the Myths, Compile the Facts </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+        }
+        
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #0d47a1;
+            --secondary: #00c853;
+            --secondary-dark: #00a844;
+            --accent: #ff4081;
+            --accent-dark: #f50057;
+            --dark: #0a192f;
+            --darker: #071224;
+            --light: #f5f7fa;
+            --gray: #a0aec0;
+            --card-bg: rgba(20, 30, 48, 0.9);
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .club-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px 0 30px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .logo-container {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .club-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary);
+            box-shadow: 0 0 25px rgba(26, 115, 232, 0.5);
+            transition: transform 0.5s;
+        }
+        
+        .club-logo:hover {
+            transform: rotate(10deg);
+        }
+        
+        .club-name {
+            font-size: 3.2rem;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            font-weight: 800;
+        }
+        
+        .club-tagline {
+            font-size: 1.4rem;
+            color: var(--gray);
+            margin-bottom: 15px;
+            max-width: 600px;
+        }
+        
+        .club-motto {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            font-style: italic;
+            margin-top: 10px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            background-color: rgba(0, 200, 83, 0.1);
+            border: 1px solid rgba(0, 200, 83, 0.2);
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(26, 115, 232, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-info::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .info-box {
+            text-align: center;
+            flex: 1;
+            position: relative;
+            padding: 0 15px;
+        }
+        
+        .info-box:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 20%;
+            height: 60%;
+            width: 1px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-value {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        
+        .info-label {
+            font-size: 1.1rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .card-container {
+            position: relative;
+            height: 450px;
+            margin-bottom: 40px;
+            perspective: 1500px;
+        }
+        
+        .card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            border: 1px solid rgba(26, 115, 232, 0.2);
+        }
+        
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-radius: 20px;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backface-visibility: hidden;
+            box-sizing: border-box;
+        }
+        
+        .card-front {
+            background-color: var(--card-bg);
+            z-index: 1;
+        }
+        
+        .card-back {
+            background-color: rgba(25, 40, 65, 0.98);
+            transform: rotateY(180deg);
+            z-index: 0;
+        }
+        
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .card.flipped .card-front {
+            z-index: 0;
+        }
+        
+        .card.flipped .card-back {
+            z-index: 1;
+        }
+        
+        .statement {
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            line-height: 1.5;
+            padding: 0 20px;
+            color: var(--light);
+            font-weight: 500;
+        }
+        
+        .topic-badge {
+            display: inline-block;
+            background-color: rgba(255, 64, 129, 0.2);
+            color: var(--accent);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 64, 129, 0.3);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 40px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 20px 50px;
+            font-size: 1.6rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            min-width: 220px;
+            justify-content: center;
+        }
+        
+        .myth-btn {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+        }
+        
+        .fact-btn {
+            background: linear-gradient(135deg, var(--primary), #4361ee);
+            color: white;
+        }
+        
+        .btn:hover:not(:disabled) {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .myth-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #ff2b5e, #ff3a1a);
+        }
+        
+        .fact-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--primary-dark), #3a56e4);
+        }
+        
+        .card-back .answer {
+            font-size: 4.5rem;
+            margin-bottom: 30px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+        
+        .myth-answer {
+            color: #ff416c;
+            text-shadow: 0 0 20px rgba(255, 65, 108, 0.5);
+        }
+        
+        .fact-answer {
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(26, 115, 232, 0.5);
+        }
+        
+        .explanation {
+            font-size: 1.7rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            color: #ccd6f6;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+        
+        .field-info {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-top: 15px;
+            font-style: italic;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+        
+        .next-btn {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: #00220e;
+            padding: 18px 50px;
+            font-size: 1.5rem;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+        }
+        
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, var(--secondary-dark), #0d7a70);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .reset-btn {
+            background-color: rgba(255, 65, 108, 0.15);
+            color: #ff9eb5;
+            border: 2px solid #ff416c;
+        }
+        
+        .hint-btn {
+            background-color: rgba(0, 200, 83, 0.15);
+            color: #a8ffe8;
+            border: 2px solid var(--secondary);
+        }
+        
+        .reveal-btn {
+            background-color: rgba(26, 115, 232, 0.15);
+            color: #b3e9ff;
+            border: 2px solid var(--primary);
+        }
+        
+        .reset-btn:hover, .hint-btn:hover, .reveal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .completion-screen {
+            display: none;
+            text-align: center;
+            padding: 50px;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            margin-top: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(26, 115, 232, 0.2);
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .completion-screen h2 {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        
+        .final-score {
+            font-size: 5rem;
+            color: var(--primary);
+            font-weight: 900;
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(26, 115, 232, 0.5);
+        }
+        
+        .performance-message {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: #ccd6f6;
+            line-height: 1.6;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .club-invite {
+            background-color: rgba(26, 115, 232, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(26, 115, 232, 0.3);
+        }
+        
+        .club-invite h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        
+        .club-invite p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--gray);
+        }
+        
+        .tech-elements {
+            position: fixed;
+            font-size: 2.5rem;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(26, 115, 232, 0.3);
+            z-index: -1;
+        }
+        
+        .tech-elements i {
+            position: absolute;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .tech-elements i:nth-child(1) {
+            top: 0;
+            right: 0;
+            animation-delay: 0s;
+        }
+        
+        .tech-elements i:nth-child(2) {
+            top: 50px;
+            right: 50px;
+            animation-delay: 2s;
+        }
+        
+        .tech-elements i:nth-child(3) {
+            top: 100px;
+            right: 20px;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+        
+        .hint-box {
+            display: none;
+            background-color: rgba(0, 200, 83, 0.1);
+            border: 1px solid var(--secondary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .hint-box p {
+            color: #a8ffe8;
+            font-size: 1.3rem;
+            line-height: 1.5;
+        }
+        
+        .pulse {
+            animation: pulse 2.5s infinite ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .correct-feedback {
+            animation: correctPulse 0.5s ease-in-out;
+        }
+        
+        .incorrect-feedback {
+            animation: incorrectPulse 0.5s ease-in-out;
+        }
+        
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes incorrectPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+        }
+        
+        .fire-animate {
+            animation: fireFlicker 1.5s infinite ease-in-out;
+        }
+        
+        @keyframes fireFlicker {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            25% { transform: scale(1.15) rotate(2deg); opacity: 0.9; }
+            50% { transform: scale(1.1) rotate(-2deg); opacity: 1; }
+            75% { transform: scale(1.2) rotate(1deg); opacity: 0.85; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        @media (max-width: 1000px) {
+            .club-name {
+                font-size: 2.5rem;
+            }
+            
+            .statement {
+                font-size: 1.9rem;
+            }
+            
+            .card-container {
+                height: 500px;
+            }
+            
+            .card-front, .card-back {
+                padding: 30px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .btn {
+                padding: 18px 30px;
+                font-size: 1.4rem;
+                min-width: auto;
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .card-back .answer {
+                font-size: 3.5rem;
+            }
+            
+            .explanation {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 700px) {
+            .club-name {
+                font-size: 2rem;
+            }
+            
+            .club-tagline {
+                font-size: 1.1rem;
+            }
+            
+            .statement {
+                font-size: 1.6rem;
+            }
+            
+            .card-container {
+                height: 550px;
+            }
+            
+            .game-info {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .info-box:not(:last-child)::after {
+                display: none;
+            }
+            
+            .info-value {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-elements">
+        <i class="fas fa-robot"></i>
+        <i class="fas fa-microchip"></i>
+        <i class="fas fa-code"></i>
+    </div>
+    
+    <div class="container">
+        <header class="club-header">
+            <div class="logo-container">
+                <img src="images/589106390_18249482317293882_4915262253632940900_n-removebg-preview.png" alt="RoboTech Club circular logo featuring a stylized robot and microchip design in shades of blue and green on a transparent background, representing the club's focus on robotics, artificial intelligence, and computer science." class="club-logo">
+            </div>
+            <h1 class="club-name">OTC</h1>
+            <p class="club-tagline" style="font-size: 2.2rem; background: linear-gradient(90deg, #87ceeb, #ff69b4, #87ceeb); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 700;">Debug the Myths, Compile the Facts</p>
+            <p class="club-motto"><strong>"Every dream needs a team"</strong></p>
+        </header>
+        
+        <div class="game-info">
+            <div class="info-box">
+                <div class="info-value" id="score">0</div>
+                <div class="info-label">SCORE</div>
+            </div>
+            
+            <div class="info-box">
+                <div class="info-value" id="progress">1/21</div>
+                <div class="info-label">QUESTION</div>
+            </div>
+            
+            <div class="info-box">
+                <div class="info-value" id="streak">0 <i class="fas fa-fire" style="color:#ff9800;"></i></div>
+                <div class="info-label">STREAK</div>
+            </div>
+        </div>
+        
+        <div class="hint-box" id="hint-box">
+            <p id="hint-text"></p>
+        </div>
+        
+        <div class="card-container">
+            <div class="card" id="card">
+                <div class="card-front">
+                    <div class="topic-badge" id="topic-badge">AI</div>
+                    <div class="statement" id="statement">
+                        Neural networks in AI are architecturally identical to biological neural networks in the human brain.
+                    </div>
+                    <div class="buttons">
+                        <button class="btn myth-btn" id="myth-btn">
+                            <i class="fas fa-times-circle"></i> MYTH
+                        </button>
+                        <button class="btn fact-btn" id="fact-btn">
+                            <i class="fas fa-check-circle"></i> FACT
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card-back">
+                    <div class="answer" id="answer">MYTH</div>
+                    <div class="explanation" id="explanation">
+                        Artificial neural networks are highly simplified mathematical abstractions inspired by biological neurons. Real neurons are vastly more complex with different electrochemical signaling, plasticity mechanisms, and network architectures.
+                    </div>
+                    <div class="field-info" id="field-info">
+                        Field: Artificial Intelligence | Complexity: Advanced
+                    </div>
+                    <button class="next-btn" id="next-btn">Next Question <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn reset-btn" id="reset-btn">
+                <i class="fas fa-redo"></i> Reset Quiz
+            </button>
+            <button class="control-btn hint-btn" id="hint-btn">
+                <i class="fas fa-lightbulb"></i> Show Hint
+            </button>
+            <button class="control-btn reveal-btn" id="reveal-btn">
+                <i class="fas fa-eye"></i> Reveal Answer
+            </button>
+        </div>
+        
+        <div class="completion-screen" id="completion-screen">
+            <h2>Quiz Complete!</h2>
+            <div class="final-score" id="final-score">0/21</div>
+            <p class="performance-message" id="performance-message">
+                Great effort! You're building your knowledge in robotics and AI.
+            </p>
+            
+            <div class="club-invite">
+                <h3>Join OTC Club!</h3>
+                <p>Interested in robotics, AI, and cutting-edge technology?</p>
+                <p>Join our club to work on projects, attend workshops, and connect with fellow tech enthusiasts!</p>
+                <p><i class="fas fa-calendar-alt"></i> Meetings: Every Wednesday, 4 PM</p>
+                <p><i class="fas fa-map-marker-alt"></i> Location: Science & Technology Building, Room 305</p>
+            </div>
+            
+            <button class="next-btn" id="restart-btn">
+                <i class="fas fa-redo"></i> Try Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                statement: "A computer's hard drive is the same thing as its memory (RAM).",
+                answer: "myth",
+                explanation: "Hard drives (or SSDs) and RAM are different. The hard drive is for long-term storage (files, photos, programs stay when powered off). RAM is for short-term, active work (what you're currently using; it clears when power turns off).",
+                field: "Computer Hardware Basics",
+                topic: "Computer Science",
+                hint: "Think about what happens to your unsaved work when you turn off your computer.",
+                complexity: "Beginner"
+            },
+            {
+                statement: "All robots look and move like humans.",
+                answer: "myth",
+                explanation: "Most robots do not look like humans. They come in many shapes and sizes: robot arms in factories, wheels, tracks, drones, and more. Human-like robots are called 'humanoids' and are just one specific type among many.",
+                field: "Robotics Basics",
+                topic: "Robotics",
+                hint: "Think about robot vacuums, factory arms, and drones. Do they look human-shaped?",
+                complexity: "Beginner"
+            },
+            {
+                statement: "You need to be a math genius to learn computer programming.",
+                answer: "myth",
+                explanation: "Programming is more about logic, problem-solving, and clear thinking than advanced math. While math is helpful for some fields (graphics, data science), most programming uses basic arithmetic. Persistence and logical thinking are more important than being a math expert.",
+                field: "Programming Basics",
+                topic: "Computer Science",
+                hint: "Programming is like writing clear instructions or a recipe. Is that the same as being a math genius?",
+                complexity: "Beginner"
+            },
+            {
+                statement: "The Internet and the World Wide Web are two names for the exact same thing.",
+                answer: "myth",
+                explanation: "They are related but different. The Internet is the global network infrastructure of connected computers (like a system of roads). The World Wide Web is websites and pages accessed through browsers over that internet (like vehicles using those roads).",
+                field: "Internet Fundamentals",
+                topic: "Computer Science",
+                hint: "The Internet is the infrastructure; the Web is what you see in your browser.",
+                complexity: "Beginner"
+            },
+            {
+                statement: "A smartphone is a type of robot.",
+                answer: "myth",
+                explanation: "While smartphones have sensors (camera, gyroscope) and a powerful computer brain, they lack actuators to physically move or affect the world without human help. Robots need sensors, a brain, AND actuators. Therefore, a smartphone is a powerful computer, not a robot.",
+                field: "Robotics Basics",
+                topic: "Robotics",
+                hint: "Robots need sensors, a brain, and the ability to move or manipulate objects physically. Does your phone do all three?",
+                complexity: "Beginner"
+            },
+            {
+                statement: "TensorFlow and PyTorch are the two most widely used Python libraries for deep learning and neural networks.",
+                answer: "fact",
+                explanation: "TensorFlow (developed by Google) and PyTorch (developed by Meta) are the dominant deep learning frameworks used by researchers and companies worldwide for building and training neural networks.",
+                field: "Deep Learning Frameworks",
+                topic: "AI",
+                hint: "These are the two most popular choices for deep learning projects.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "Boston Dynamics' humanoid robot Atlas can perform parkour movements including backflips and jumping over obstacles.",
+                answer: "fact",
+                explanation: "Boston Dynamics' Atlas is a humanoid robot capable of performing dynamic movements such as backflips, jumping, and navigating complex terrain. These capabilities are achieved through advanced control systems and machine learning techniques.",
+                field: "Humanoid Robotics",
+                topic: "Robotics",
+                hint: "Boston Dynamics is famous for their robot videos showing impressive physical capabilities.",
+                complexity: "Intermediate"
+            },
+            {
+
+                statement: "NVIDIA's CUDA is a computing platform that allows programmers to use graphics processing units (GPUs) for general-purpose computing and machine learning tasks.",
+                answer: "fact",
+                explanation: "CUDA (Compute Unified Device Architecture) is NVIDIA's parallel computing platform that enables GPUs to be used beyond graphics. It has become essential for deep learning and AI applications because GPUs can process data much faster than CPUs for these tasks.",
+                field: "GPU Computing",
+                topic: "Computer Science",
+                hint: "This technology is widely used to speed up machine learning model training.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "GPT-4 has a context window of approximately 32,000 tokens, allowing it to process and remember context from very long conversations.",
+                answer: "fact",
+                explanation: "GPT-4 has a context window of 32,768 tokens, enabling it to process approximately 24,000 words of text in a single interaction, maintaining coherence across long conversations.",
+                field: "Natural Language Processing",
+                topic: "AI",
+                hint: "This refers to the technical specifications of a well-known AI model.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "ROS2 (Robot Operating System 2) is a software framework used for building robot applications and managing communication between different robot components.",
+                answer: "fact",
+                explanation: "ROS2 is a popular open-source middleware framework that provides tools and libraries for developing robot software. It handles communication, control, and coordination between different sensors and actuators in robotic systems.",
+                field: "Robotics Software",
+                topic: "Robotics",
+                hint: "ROS is the standard operating system framework used by many roboticists.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "Transformer neural networks, which power modern language models like ChatGPT, use attention mechanisms to analyze relationships between words in a sentence.",
+                answer: "fact",
+                explanation: "Transformers use an attention mechanism that examines how different words relate to each other in text. This allows the model to understand context and meaning better than previous approaches, making them ideal for language understanding tasks.",
+                field: "Deep Learning Architecture",
+                topic: "AI",
+                hint: "This is the key technology behind modern AI language models.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "Linear regression models can show which features (variables) are most important in making predictions because the relationship is straightforward and easy to interpret.",
+                answer: "fact",
+                explanation: "Linear regression is an interpretable model where predictions are made using simple mathematical equations. You can easily see which input features have the strongest effect on the prediction, making it transparent and understandable.",
+                field: "Interpretable Machine Learning",
+                topic: "AI",
+                hint: "Some machine learning models are designed to be easy to understand.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "Swarm robotics is the study of how multiple simple robots can work together to accomplish complex tasks without a central control system.",
+                answer: "fact",
+                explanation: "Swarm robotics involves using many simple robots that communicate and coordinate with each other locally to complete tasks. This approach is inspired by how insects like ants and bees work together in nature without needing a leader.",
+                field: "Swarm Robotics",
+                topic: "Robotics",
+                hint: "This field studies how groups of robots can achieve intelligence through cooperation.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "BERT is a language model developed by Google that can understand the meaning of words by looking at the surrounding context in a sentence.",
+                answer: "fact",
+                explanation: "BERT (Bidirectional Encoder Representations from Transformers) is a language model that analyzes text by considering words before and after a target word. This allows it to better understand context and meaning in natural language processing tasks.",
+                field: "Natural Language Processing",
+                topic: "AI",
+                hint: "This model is widely used for understanding text meaning in AI applications.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "An AI model trained to recognize animals in photos can immediately recognize animals in videos without needing any additional training.",
+                answer: "myth",
+                explanation: "While models trained on one type of data can sometimes work on similar data, they usually need some adjustment. A model trained on photos may not work well on videos because the data is presented differently. Some fine-tuning or retraining is typically needed.",
+                field: "Transfer Learning",
+                topic: "AI",
+                hint: "Think about whether different types of data (photos vs videos) require model adjustment.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "Moore's Law states that the number of transistors on a computer chip roughly doubles every two years, leading to faster and more powerful computers.",
+                answer: "fact",
+                explanation: "Moore's Law, named after Intel co-founder Gordon Moore, observed that the number of transistors on integrated circuits doubles approximately every two years. This trend has driven exponential growth in computing power and has held true for decades, though it is beginning to slow down.",
+                field: "Computer Hardware",
+                topic: "Computer Science",
+                hint: "This is a famous observation about how computer hardware has improved over time.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "Machine learning models can learn to recognize patterns from data without being explicitly programmed for each specific task.",
+                answer: "fact",
+                explanation: "Machine learning is a subset of AI where systems learn patterns from data rather than following pre-programmed instructions. Models improve their performance by learning from examples and adjusting their parameters automatically.",
+                field: "Machine Learning Basics",
+                topic: "AI",
+                hint: "This is one of the fundamental differences between machine learning and traditional programming.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "Convolutional Neural Networks (CNNs) are specifically designed to process image data and extract visual features like edges and shapes.",
+                answer: "fact",
+                explanation: "CNNs use convolutional layers to scan images and identify visual patterns. They are the standard architecture for computer vision tasks because they can efficiently recognize edges, textures, and more complex features through multiple layers.",
+                field: "Computer Vision",
+                topic: "AI",
+                hint: "This network type is ideal for analyzing pictures and videos.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "Reinforcement learning teaches AI agents by giving them rewards when they make good decisions and penalties when they make bad ones.",
+                answer: "fact",
+                explanation: "Reinforcement learning is a training method where an AI agent learns by interacting with an environment, receiving rewards for good actions and penalties for bad ones. This approach is used to train game-playing AI, robots, and autonomous systems.",
+                field: "Reinforcement Learning",
+                topic: "AI",
+                hint: "This learning method mimics how animals learn through reward and punishment.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "An artificial neural network with more layers can always achieve better results than one with fewer layers, regardless of the problem.",
+                answer: "myth",
+                explanation: "While deeper networks can learn more complex patterns, adding more layers doesn't always improve performance. Too many layers can lead to problems like vanishing gradients, overfitting, and slower training. The optimal depth depends on the specific problem and available data.",
+                field: "Deep Learning Theory",
+                topic: "AI",
+                hint: "More complexity isn't always better in machine learning.",
+                complexity: "Intermediate"
+            },
+            {
+                statement: "Computer vision is the field of AI that enables computers to interpret and understand visual information from images and videos.",
+                answer: "fact",
+                explanation: "Computer vision uses AI and machine learning to help computers analyze visual data. It powers applications like facial recognition, object detection, autonomous vehicles, and medical image analysis.",
+                field: "Computer Vision",
+                topic: "AI",
+                hint: "This technology is used in smartphones, security systems, and self-driving cars.",
+                complexity: "Intermediate"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let gameActive = true;
+        let currentStreak = 0;
+
+        const statementElement = document.getElementById('statement');
+        const answerElement = document.getElementById('answer');
+        const explanationElement = document.getElementById('explanation');
+        const fieldInfoElement = document.getElementById('field-info');
+        const topicBadgeElement = document.getElementById('topic-badge');
+        const scoreElement = document.getElementById('score');
+        const progressElement = document.getElementById('progress');
+        const streakElement = document.getElementById('streak');
+        const cardElement = document.getElementById('card');
+        const mythButton = document.getElementById('myth-btn');
+        const factButton = document.getElementById('fact-btn');
+        const nextButton = document.getElementById('next-btn');
+        const resetButton = document.getElementById('reset-btn');
+        const hintButton = document.getElementById('hint-btn');
+        const revealButton = document.getElementById('reveal-btn');
+        const hintBox = document.getElementById('hint-box');
+        const hintText = document.getElementById('hint-text');
+        const completionScreen = document.getElementById('completion-screen');
+        const finalScoreElement = document.getElementById('final-score');
+        const performanceMessage = document.getElementById('performance-message');
+        const restartButton = document.getElementById('restart-btn');
+
+        function initGame() {
+            currentQuestion = 0;
+            score = 0;
+            currentStreak = 0;
+            gameActive = true;
+            
+            scoreElement.textContent = score;
+            streakElement.innerHTML = `${currentStreak} <i class="fas fa-fire" style="color:#ff9800;"></i>`;
+            progressElement.textContent = `${currentQuestion + 1}/${quizData.length}`;
+            
+            loadQuestion();
+            
+            completionScreen.style.display = 'none';
+            cardElement.classList.remove('flipped');
+            hintBox.style.display = 'none';
+            
+            mythButton.disabled = false;
+            factButton.disabled = false;
+            
+            mythButton.style.background = 'linear-gradient(135deg, #ff416c, #ff4b2b)';
+            factButton.style.background = 'linear-gradient(135deg, var(--primary), #4361ee)';
+        }
+
+        function loadQuestion() {
+            if (!gameActive) return;
+            
+            const question = quizData[currentQuestion];
+            statementElement.textContent = question.statement;
+            explanationElement.textContent = question.explanation;
+            fieldInfoElement.textContent = `Field: ${question.field} | Complexity: ${question.complexity}`;
+            topicBadgeElement.textContent = question.topic;
+            progressElement.textContent = `${currentQuestion + 1}/${quizData.length}`;
+            
+            if (question.topic === "AI") {
+                topicBadgeElement.style.backgroundColor = "rgba(255, 64, 129, 0.2)";
+                topicBadgeElement.style.borderColor = "rgba(255, 64, 129, 0.3)";
+                topicBadgeElement.style.color = "var(--accent)";
+            } else if (question.topic === "Robotics") {
+                topicBadgeElement.style.backgroundColor = "rgba(0, 200, 83, 0.2)";
+                topicBadgeElement.style.borderColor = "rgba(0, 200, 83, 0.3)";
+                topicBadgeElement.style.color = "var(--secondary)";
+            } else {
+                topicBadgeElement.style.backgroundColor = "rgba(26, 115, 232, 0.2)";
+                topicBadgeElement.style.borderColor = "rgba(26, 115, 232, 0.3)";
+                topicBadgeElement.style.color = "var(--primary)";
+            }
+            
+            cardElement.classList.remove('flipped');
+            hintBox.style.display = 'none';
+            
+            mythButton.disabled = false;
+            factButton.disabled = false;
+            
+            resetButton.disabled = false;
+            hintButton.disabled = false;
+            revealButton.disabled = false;
+            
+            mythButton.style.background = 'linear-gradient(135deg, #ff416c, #ff4b2b)';
+            factButton.style.background = 'linear-gradient(135deg, var(--primary), #4361ee)';
+        }
+
+        function checkAnswer(userAnswer) {
+            if (!gameActive) return;
+            
+            const question = quizData[currentQuestion];
+            
+            mythButton.disabled = true;
+            factButton.disabled = true;
+            
+            answerElement.textContent = question.answer.toUpperCase();
+            answerElement.className = `answer ${question.answer}-answer`;
+            
+            setTimeout(() => {
+                cardElement.classList.add('flipped');
+            }, 300);
+            
+            if (userAnswer === question.answer) {
+                score++;
+                scoreElement.textContent = score;
+                currentStreak++;
+                
+                streakElement.innerHTML = `${currentStreak} <i class="fas fa-fire" style="color:#ff9800;"></i>`;
+                
+                if (userAnswer === 'myth') {
+                    mythButton.style.background = 'linear-gradient(135deg, var(--secondary), var(--secondary-dark))';
+                    mythButton.classList.add('correct-feedback');
+                    setTimeout(() => mythButton.classList.remove('correct-feedback'), 500);
+                } else {
+                    factButton.style.background = 'linear-gradient(135deg, var(--secondary), var(--secondary-dark))';
+                    factButton.classList.add('correct-feedback');
+                    setTimeout(() => factButton.classList.remove('correct-feedback'), 500);
+                }
+            } else {
+                currentStreak = 0;
+                streakElement.innerHTML = `${currentStreak} <i class="fas fa-fire" style="color:#ff9800;"></i>`;
+                
+                if (userAnswer === 'myth') {
+                    mythButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
+                    mythButton.classList.add('incorrect-feedback');
+                    setTimeout(() => mythButton.classList.remove('incorrect-feedback'), 500);
+                } else {
+                    factButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
+                    factButton.classList.add('incorrect-feedback');
+                    setTimeout(() => factButton.classList.remove('incorrect-feedback'), 500);
+                }
+            }
+        }
+
+        function showHint() {
+            if (!gameActive) return;
+
+            const question = quizData[currentQuestion];
+            hintText.textContent = question.hint;
+            hintBox.style.display = 'block';
+        }
+
+        function revealAnswer() {
+            if (!gameActive) return;
+
+            const question = quizData[currentQuestion];
+            checkAnswer(question.answer);
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion >= quizData.length) {
+                gameActive = false;
+                hintButton.disabled = true;
+                revealButton.disabled = true;
+                completionScreen.style.display = 'block';
+                finalScoreElement.textContent = `${score}/${quizData.length}`;
+                
+                const percentage = (score / quizData.length) * 100;
+                let message = "";
+                if (percentage === 100) {
+                    message = "Perfect score! You're a master of AI and Robotics!";
+                } else if (percentage >= 80) {
+                    message = "Outstanding! You have excellent knowledge in AI and Robotics!";
+                } else if (percentage >= 60) {
+                    message = "Good job! You're building solid knowledge in AI and Robotics.";
+                } else if (percentage >= 40) {
+                    message = "Nice effort! Keep learning more about AI and Robotics.";
+                } else {
+                    message = "Great try! There's much more to explore in AI and Robotics. Keep learning!";
+                }
+                performanceMessage.textContent = message;
+            } else {
+                loadQuestion();
+            }
+        }
+
+        mythButton.addEventListener('click', () => checkAnswer('myth'));
+        factButton.addEventListener('click', () => checkAnswer('fact'));
+        nextButton.addEventListener('click', nextQuestion);
+        resetButton.addEventListener('click', initGame);
+        hintButton.addEventListener('click', showHint);
+        revealButton.addEventListener('click', revealAnswer);
+        restartButton.addEventListener('click', initGame);
+
+        initGame();
+    </script>
+</body>
+</html>
